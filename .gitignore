@@ -1,0 +1,28 @@
+## .NET build results
+bin/
+obj/
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userprefs
+
+## App settings with secrets
+appsettings.Local.json
+appsettings.*.Local.json
+secrets.json
+
+## Environment files
+.env
+.env.*
+!.env.example
+
+## IDE
+.idea/
+.vscode/
+*.swp
+
+## OS
+Thumbs.db
+.DS_Store
