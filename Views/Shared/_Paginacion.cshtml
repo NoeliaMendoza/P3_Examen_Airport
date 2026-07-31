@@ -1,0 +1,46 @@
+@model AirportApp.ViewModels.PaginacionViewModel
+
+<nav class="mt-3">
+    <ul class="pagination justify-content-center">
+        @if (Model.TienePaginaAnterior)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Index"
+                   asp-route-pagina="@(Model.PaginaActual - 1)"
+                   asp-route-buscar="@Model.Buscar"
+                   asp-route-filtro1="@Model.Filtro1"
+                   asp-route-filtro2="@Model.Filtro2"
+                   asp-route-orden="@Model.Orden">Anterior</a>
+            </li>
+        }
+
+        @for (int i = 1; i <= Model.TotalPaginas; i++)
+        {
+            <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
+                <a class="page-link" asp-action="Index"
+                   asp-route-pagina="@i"
+                   asp-route-buscar="@Model.Buscar"
+                   asp-route-filtro1="@Model.Filtro1"
+                   asp-route-filtro2="@Model.Filtro2"
+                   asp-route-orden="@Model.Orden">@i</a>
+            </li>
+        }
+
+        @if (Model.TienePaginaSiguiente)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Index"
+                   asp-route-pagina="@(Model.PaginaActual + 1)"
+                   asp-route-buscar="@Model.Buscar"
+                   asp-route-filtro1="@Model.Filtro1"
+                   asp-route-filtro2="@Model.Filtro2"
+                   asp-route-orden="@Model.Orden">Siguiente</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+<div class="text-center text-muted small mb-3">
+    Página @Model.PaginaActual de @Model.TotalPaginas —
+    @Model.TotalRegistros registros (páginas de @Model.TamanoPagina)
+</div>
