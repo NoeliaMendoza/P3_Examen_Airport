@@ -1,0 +1,278 @@
+@using AirportApp.Models.Commerce
+@{
+    ViewData["Title"] = "Panel de administración";
+
+    var ventasPorPasarela = ViewBag.VentasPorPasarela as List<dynamic> ?? new List<dynamic>();
+    var ventasPorMes = ViewBag.VentasPorMes as List<dynamic> ?? new List<dynamic>();
+    var ultimosPagos = ViewBag.UltimosPagos as List<Payment> ?? new List<Payment>();
+
+    string[] mesesEsp = { "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" };
+}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div>
+        <h1>Panel de administración</h1>
+        <p class="lead-muted">Reportes generales de la operación aeroportuaria.</p>
+    </div>
+    <span class="badge bg-soft-primary"><i class="bi bi-shield-lock me-1"></i>Acceso restringido</span>
+</div>
+
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+        <i class="bi bi-check-circle"></i><div>@TempData["Ok"]</div>
+    </div>
+}
+
+@* ==================== KPIs OPERATIVOS ==================== *@
+<div class="section-heading d-flex align-items-center gap-2 mb-3">
+    <i class="bi bi-geo text-primary"></i>
+    <div>
+        <h2 class="mb-0">Operación aeroportuaria</h2>
+        <p class="text-muted small mb-0">Volumen del catálogo y actividad actual.</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card h-100">
+            <div class="stat-icon bg-soft-primary text-primary"><i class="bi bi-airplane-engines"></i></div>
+            <div class="stat-label">Vuelos</div>
+            <div class="stat-value" style="font-size:1.5rem;">@ViewBag.TotalVuelos</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card h-100">
+            <div class="stat-icon bg-soft-neutral text-secondary"><i class="bi bi-geo-alt"></i></div>
+            <div class="stat-label">Aeropuertos</div>
+            <div class="stat-value" style="font-size:1.5rem;">@ViewBag.TotalAeropuertos</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card h-100">
+            <div class="stat-icon bg-soft-neutral text-secondary"><i class="bi bi-building"></i></div>
+            <div class="stat-label">Aerolíneas</div>
+            <div class="stat-value" style="font-size:1.5rem;">@ViewBag.TotalAerolineas</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card h-100">
+            <div class="stat-icon bg-soft-neutral text-secondary"><i class="bi bi-box-seam"></i></div>
+            <div class="stat-label">Aeronaves</div>
+            <div class="stat-value" style="font-size:1.5rem;">@ViewBag.TotalAeronaves</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card h-100">
+            <div class="stat-icon bg-soft-success text-success"><i class="bi bi-people"></i></div>
+            <div class="stat-label">Pasajeros</div>
+            <div class="stat-value" style="font-size:1.5rem;">@ViewBag.TotalPasajeros</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card h-100">
+            <div class="stat-icon bg-soft-warning text-warning-emphasis"><i class="bi bi-person-gear"></i></div>
+            <div class="stat-label">Usuarios</div>
+            <div class="stat-value" style="font-size:1.5rem;">@ViewBag.TotalUsuarios</div>
+        </div>
+    </div>
+</div>
+
+@* ==================== KPIs COMERCIALES ==================== *@
+<div class="section-heading d-flex align-items-center gap-2 mb-3">
+    <i class="bi bi-graph-up text-primary"></i>
+    <div>
+        <h2 class="mb-0">Actividad comercial</h2>
+        <p class="text-muted small mb-0">Órdenes, pagos y disponibilidad de asientos.</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card h-100">
+            <div class="stat-icon bg-soft-primary text-primary"><i class="bi bi-receipt"></i></div>
+            <div class="stat-label">Órdenes</div>
+            <div class="stat-value">@ViewBag.OrdenesTotales</div>
+            <div class="text-muted small mt-1">@ViewBag.OrdenesAprobadas aprobadas</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card h-100">
+            <div class="stat-icon bg-soft-success text-success"><i class="bi bi-cash-stack"></i></div>
+            <div class="stat-label">Ingresos confirmados</div>
+            <div class="stat-value">$@ViewBag.Ingresos.ToString("N2")</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card h-100">
+            <div class="stat-icon bg-soft-warning text-warning-emphasis"><i class="bi bi-clock-history"></i></div>
+            <div class="stat-label">Reservas temporales</div>
+            <div class="stat-value">@ViewBag.ReservasActivas</div>
+            <div class="text-muted small mt-1">activas ahora</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card h-100">
+            <div class="stat-icon bg-soft-neutral text-secondary"><i class="bi bi-grid-3x3-gap"></i></div>
+            <div class="stat-label">Asientos ocupados</div>
+            <div class="stat-value">@ViewBag.AsientosOcupados</div>
+            <div class="text-muted small mt-1">de @ViewBag.AsientosTotales totales</div>
+        </div>
+    </div>
+</div>
+
+@* ==================== REPORTES DETALLADOS ==================== *@
+<div class="section-heading d-flex align-items-center gap-2 mb-3">
+    <i class="bi bi-bar-chart text-primary"></i>
+    <div>
+        <h2 class="mb-0">Reportes</h2>
+        <p class="text-muted small mb-0">Desglose de ventas y actividad de pagos.</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <div class="table-card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-credit-card text-primary"></i>Ingresos por pasarela
+            </div>
+            @if (ventasPorPasarela.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Pasarela</th>
+                                <th class="text-center">Pagos</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var v in ventasPorPasarela)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-soft-neutral">
+                                            @if (v.Pasarela == "PayPal")
+                                            {
+                                                <i class="bi bi-paypal me-1"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-phone me-1"></i>
+                                            }
+                                            @v.Pasarela
+                                        </span>
+                                    </td>
+                                    <td class="text-center">@v.Pagos</td>
+                                    <td class="text-end fw-semibold" style="color: var(--p-color-primary);">$@v.Total.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state p-4">
+                    <div class="empty-icon"><i class="bi bi-credit-card"></i></div>
+                    <p class="mb-0">Aún no hay pagos confirmados.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="table-card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-calendar-event text-primary"></i>Ventas por mes
+            </div>
+            @if (ventasPorMes.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Periodo</th>
+                                <th class="text-end">Ingresos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var v in ventasPorMes)
+                            {
+                                <tr>
+                                    <td>@mesesEsp[v.Month - 1] @v.Year</td>
+                                    <td class="text-end fw-semibold" style="color: var(--p-color-primary);">$@v.Total.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state p-4">
+                    <div class="empty-icon"><i class="bi bi-calendar-event"></i></div>
+                    <p class="mb-0">Aún no hay ventas registradas.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (ultimosPagos.Any())
+{
+    <div class="table-card">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="bi bi-clock-history text-primary"></i>Últimos pagos
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Orden</th>
+                        <th>Pasarela</th>
+                        <th>Transacción</th>
+                        <th>Fecha</th>
+                        <th class="text-end">Monto</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in ultimosPagos)
+                    {
+                        var badge = p.Status switch
+                        {
+                            "Aprobado" => "bg-soft-success",
+                            "Pendiente" => "bg-soft-warning",
+                            "Cancelado" or "Fallido" => "bg-soft-danger",
+                            _ => "bg-soft-neutral",
+                        };
+                        <tr>
+                            <td><span class="badge bg-soft-neutral">@p.PaymentId</span></td>
+                            <td>#@p.OrderId</td>
+                            <td>
+                                <span class="badge bg-soft-neutral">
+                                    @if (p.Gateway == "PayPal")
+                                    {
+                                        <i class="bi bi-paypal me-1"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-phone me-1"></i>
+                                    }
+                                    @p.Gateway
+                                </span>
+                            </td>
+                            <td><code class="small">@(p.ExternalTransactionId ?? "-")</code></td>
+                            <td>@p.CreationDate.ToLocalTime()</td>
+                            <td class="text-end fw-semibold">$@p.Amount.ToString("N2")</td>
+                            <td><span class="badge @badge">@p.Status</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
