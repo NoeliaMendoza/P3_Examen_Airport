@@ -1,0 +1,56 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Crear cuenta";
+}
+
+<div class="auth-wrapper">
+    <div class="auth-card fade-in">
+        <div class="auth-logo"><i class="bi bi-person-plus"></i></div>
+        <h1>Crear cuenta</h1>
+        <p class="auth-subtitle">Regístrate para reservar y pagar tu asiento.</p>
+
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label">Correo electrónico</label>
+                <div class="search-input">
+                    <i class="bi bi-envelope"></i>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="nombre@espe.edu.ec" />
+                </div>
+                <span asp-validation-for="Input.Email" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label">Contraseña</label>
+                <div class="search-input">
+                    <i class="bi bi-lock"></i>
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Mínimo 6 caracteres" />
+                </div>
+                <span asp-validation-for="Input.Password" class="text-danger small"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Input.ConfirmPassword" class="form-label">Confirmar contraseña</label>
+                <div class="search-input">
+                    <i class="bi bi-shield-check"></i>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Repite tu contraseña" />
+                </div>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-primary btn-icon justify-content-center">
+                <i class="bi bi-check-lg"></i>Registrarse
+            </button>
+        </form>
+
+        <hr class="my-4" style="border-color: var(--p-color-border);" />
+        <div class="text-center small">
+            <p class="mb-0 text-muted">¿Ya tienes cuenta?
+                <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="text-decoration-none fw-semibold" style="color: var(--p-color-accent);">Inicia sesión</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

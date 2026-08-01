@@ -1,0 +1,42 @@
+﻿@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+    }
+}
+
+<div class="page-header">
+    <h1>Mi cuenta</h1>
+    <p class="lead-muted">Administra tu perfil, seguridad y datos personales.</p>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-3">
+        <div class="card p-3">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-soft-primary"
+                      style="width: 3rem; height: 3rem;">
+                    <i class="bi bi-person text-primary fs-4"></i>
+                </span>
+                <div>
+                    <div class="fw-semibold">Perfil</div>
+                    <div class="small text-muted">Configuración</div>
+                </div>
+            </div>
+            <partial name="_ManageNav" />
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="table-card p-4">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

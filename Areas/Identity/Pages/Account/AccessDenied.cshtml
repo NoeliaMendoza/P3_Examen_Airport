@@ -1,0 +1,16 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Acceso denegado";
+}
+
+<div class="table-card empty-state fade-in" style="max-width: 34rem; margin: 3rem auto;">
+    <div class="empty-icon" style="background-color: #FEF2F2; color: var(--p-color-danger);">
+        <i class="bi bi-shield-x"></i>
+    </div>
+    <h5>Acceso denegado</h5>
+    <p>No tienes permisos para acceder a este recurso. Contacta a un administrador si crees que es un error.</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-icon">
+        <i class="bi bi-house-door"></i>Volver al inicio
+    </a>
+</div>
