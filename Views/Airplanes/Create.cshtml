@@ -1,45 +1,55 @@
 @model AirportApp.Models.Airplane
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nueva aeronave";
 }
 
-<h1>Create</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Inicio</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Aeronaves</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nueva aeronave</li>
+    </ol>
+</nav>
 
-<h4>Airplane</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="AirplaneId" class="control-label"></label>
-                <input asp-for="AirplaneId" class="form-control" />
-                <span asp-validation-for="AirplaneId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Capacity" class="control-label"></label>
-                <input asp-for="Capacity" class="form-control" />
-                <span asp-validation-for="Capacity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TypeId" class="control-label"></label>
-                <select asp-for="TypeId" class ="form-control" asp-items="ViewBag.TypeId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="AirlineId" class="control-label"></label>
-                <input asp-for="AirlineId" class="form-control" />
-                <span asp-validation-for="AirlineId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="page-header">
+    <h1>Nueva aeronave</h1>
+    <p class="lead-muted">Registra una aeronave en la flota.</p>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="row">
+    <div class="col-md-7 col-lg-6">
+        <div class="table-card p-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="AirplaneId" class="form-label"></label>
+                    <input asp-for="AirplaneId" class="form-control" />
+                    <span asp-validation-for="AirplaneId" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Capacity" class="form-label"></label>
+                    <input asp-for="Capacity" class="form-control" />
+                    <span asp-validation-for="Capacity" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="TypeId" class="form-label"></label>
+                    <select asp-for="TypeId" class="form-select" asp-items="ViewBag.TypeId"></select>
+                </div>
+                <div class="mb-4">
+                    <label asp-for="AirlineId" class="form-label"></label>
+                    <input asp-for="AirlineId" class="form-control" />
+                    <span asp-validation-for="AirlineId" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-icon"><i class="bi bi-check-lg"></i>Guardar</button>
+                    <a asp-action="Index" class="btn btn-secondary btn-icon"><i class="bi bi-arrow-left"></i>Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

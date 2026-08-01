@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AirportApp.Data;
@@ -10,7 +11,8 @@ using AirportApp.Models;
 
 namespace AirportApp.Controllers
 {
-    public class FlightsController : Controller
+    [Authorize]
+public class FlightsController : Controller
     {
         private readonly AirportContext _context;
 

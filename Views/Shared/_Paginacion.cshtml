@@ -1,22 +1,39 @@
 @model AirportApp.ViewModels.PaginacionViewModel
+@{
+    int paginaActual = Model.PaginaActual;
+    int totalPaginas = Model.TotalPaginas;
+    int rango = 3;
+    int inicio = Math.Max(1, paginaActual - rango);
+    int fin = Math.Min(totalPaginas, paginaActual + rango);
+}
 
-<nav class="mt-3">
-    <ul class="pagination justify-content-center">
-        @if (Model.TienePaginaAnterior)
+<nav class="mt-4" aria-label="Paginación">
+    <ul class="pagination justify-content-center flex-wrap mb-0">
+        <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+            <a class="page-link" aria-label="Primera" asp-action="Index"
+               asp-route-pagina="1"
+               asp-route-buscar="@Model.Buscar"
+               asp-route-filtro1="@Model.Filtro1"
+               asp-route-filtro2="@Model.Filtro2"
+               asp-route-orden="@Model.Orden">&laquo;</a>
+        </li>
+        <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+            <a class="page-link" aria-label="Anterior" asp-action="Index"
+               asp-route-pagina="@(paginaActual - 1)"
+               asp-route-buscar="@Model.Buscar"
+               asp-route-filtro1="@Model.Filtro1"
+               asp-route-filtro2="@Model.Filtro2"
+               asp-route-orden="@Model.Orden">&lsaquo;</a>
+        </li>
+
+        @if (inicio > 1)
         {
-            <li class="page-item">
-                <a class="page-link" asp-action="Index"
-                   asp-route-pagina="@(Model.PaginaActual - 1)"
-                   asp-route-buscar="@Model.Buscar"
-                   asp-route-filtro1="@Model.Filtro1"
-                   asp-route-filtro2="@Model.Filtro2"
-                   asp-route-orden="@Model.Orden">Anterior</a>
-            </li>
+            <li class="page-item disabled"><span class="page-link">…</span></li>
         }
 
-        @for (int i = 1; i <= Model.TotalPaginas; i++)
+        @for (int i = inicio; i <= fin; i++)
         {
-            <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
+            <li class="page-item @(i == paginaActual ? "active" : "")">
                 <a class="page-link" asp-action="Index"
                    asp-route-pagina="@i"
                    asp-route-buscar="@Model.Buscar"
@@ -26,21 +43,29 @@
             </li>
         }
 
-        @if (Model.TienePaginaSiguiente)
+        @if (fin < totalPaginas)
         {
-            <li class="page-item">
-                <a class="page-link" asp-action="Index"
-                   asp-route-pagina="@(Model.PaginaActual + 1)"
-                   asp-route-buscar="@Model.Buscar"
-                   asp-route-filtro1="@Model.Filtro1"
-                   asp-route-filtro2="@Model.Filtro2"
-                   asp-route-orden="@Model.Orden">Siguiente</a>
-            </li>
+            <li class="page-item disabled"><span class="page-link">…</span></li>
         }
-    </ul>
-</nav>
 
-<div class="text-center text-muted small mb-3">
-    Página @Model.PaginaActual de @Model.TotalPaginas —
-    @Model.TotalRegistros registros (páginas de @Model.TamanoPagina)
-</div>
+        <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+            <a class="page-link" aria-label="Siguiente" asp-action="Index"
+               asp-route-pagina="@(paginaActual + 1)"
+               asp-route-buscar="@Model.Buscar"
+               asp-route-filtro1="@Model.Filtro1"
+               asp-route-filtro2="@Model.Filtro2"
+               asp-route-orden="@Model.Orden">&rsaquo;</a>
+        </li>
+        <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+            <a class="page-link" aria-label="Última" asp-action="Index"
+               asp-route-pagina="@totalPaginas"
+               asp-route-buscar="@Model.Buscar"
+               asp-route-filtro1="@Model.Filtro1"
+               asp-route-filtro2="@Model.Filtro2"
+               asp-route-orden="@Model.Orden">&raquo;</a>
+        </li>
+    </ul>
+    <p class="text-center text-muted small mt-2 mb-0">
+        Página @paginaActual de @totalPaginas · @Model.TotalRegistros registros (páginas de @Model.TamanoPagina)
+    </p>
+</nav>

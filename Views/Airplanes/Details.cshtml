@@ -1,36 +1,101 @@
 @model AirportApp.Models.Airplane
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de la aeronave";
+    var aerolinea = ViewData["Aerolinea"] as AirportApp.Models.Airline;
 }
 
-<h1>Details</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Inicio</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Aeronaves</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Detalles</li>
+    </ol>
+</nav>
 
-<div>
-    <h4>Airplane</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Capacity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Capacity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AirlineId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AirlineId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Type.TypeId)
-        </dd>
-    </dl>
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div>
+        <h1 class="mb-2">
+            Aeronave #@Model.AirplaneId
+            <span class="badge bg-soft-primary ms-2 fs-6">@Model.Type?.Identifier</span>
+        </h1>
+        <p class="lead-muted mb-0">Información completa de la aeronave.</p>
+    </div>
+    <a asp-action="Edit" asp-route-id="@Model?.AirplaneId" class="btn btn-secondary btn-icon">
+        <i class="bi bi-pencil"></i>Editar
+    </a>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.AirplaneId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="table-card p-4">
+            <h5 class="card-title d-flex align-items-center gap-2 mb-3">
+                <i class="bi bi-airplane text-primary"></i>Datos generales
+            </h5>
+            <div class="detail-list" style="grid-template-columns: 1fr;">
+                <div class="detail-item">
+                    <dt>@Html.DisplayNameFor(model => model.AirlineId)</dt>
+                    <dd>@(aerolinea?.Airlinename ?? $"ID {Model.AirlineId}")</dd>
+                </div>
+                <div class="detail-item">
+                    <dt>@Html.DisplayNameFor(model => model.Capacity)</dt>
+                    <dd>@Model.Capacity pasajeros</dd>
+                </div>
+                <div class="detail-item">
+                    <dt>Tipo de aeronave</dt>
+                    <dd>@Model.Type?.Identifier</dd>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        @if (!string.IsNullOrWhiteSpace(Model.Type?.Description))
+        {
+            <div class="table-card p-4">
+                <h5 class="card-title d-flex align-items-center gap-2 mb-3">
+                    <i class="bi bi-info-circle text-primary"></i>Descripción del tipo
+                </h5>
+                <p class="mb-0" style="color: var(--p-color-text); line-height: 1.7; white-space: pre-wrap;">@Model.Type!.Description</p>
+            </div>
+        }
+
+        @if (Model.Flights.Any())
+        {
+            <div class="table-card mt-3">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-arrow-left-right text-primary"></i>Vuelos de esta aeronave (@Model.Flights.Count)
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>N.° vuelo</th>
+                                <th>Origen</th>
+                                <th>Destino</th>
+                                <th>Salida</th>
+                                <th>Llegada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var v in Model.Flights.OrderBy(f => f.Departure).Take(10))
+                            {
+                                <tr>
+                                    <td><span class="badge bg-soft-neutral">@v.Flightno</span></td>
+                                    <td>@v.FromNavigation?.Name</td>
+                                    <td>@v.ToNavigation?.Name</td>
+                                    <td>@v.Departure</td>
+                                    <td>@v.Arrival</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary btn-icon"><i class="bi bi-arrow-left"></i>Volver a la lista</a>
 </div>

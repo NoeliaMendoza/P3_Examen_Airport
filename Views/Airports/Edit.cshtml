@@ -1,42 +1,52 @@
 @model AirportApp.Models.Airport
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar aeropuerto";
 }
 
-<h1>Edit</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Inicio</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Aeropuertos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Editar aeropuerto</li>
+    </ol>
+</nav>
 
-<h4>Airport</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="AirportId" />
-            <div class="form-group">
-                <label asp-for="Iata" class="control-label"></label>
-                <input asp-for="Iata" class="form-control" />
-                <span asp-validation-for="Iata" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Icao" class="control-label"></label>
-                <input asp-for="Icao" class="form-control" />
-                <span asp-validation-for="Icao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="page-header">
+    <h1>Editar aeropuerto</h1>
+    <p class="lead-muted">Modifica los datos del aeropuerto seleccionado.</p>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="row">
+    <div class="col-md-7 col-lg-6">
+        <div class="table-card p-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="AirportId" />
+
+                <div class="mb-3">
+                    <label asp-for="Iata" class="form-label"></label>
+                    <input asp-for="Iata" class="form-control" />
+                    <span asp-validation-for="Iata" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Icao" class="form-label"></label>
+                    <input asp-for="Icao" class="form-control" />
+                    <span asp-validation-for="Icao" class="text-danger small"></span>
+                </div>
+                <div class="mb-4">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-icon"><i class="bi bi-check-lg"></i>Guardar cambios</button>
+                    <a asp-action="Index" class="btn btn-secondary btn-icon"><i class="bi bi-arrow-left"></i>Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

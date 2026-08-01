@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AirportApp.Data;
@@ -10,7 +11,8 @@ using AirportApp.Models;
 
 namespace AirportApp.Controllers
 {
-    public class AirplanesController : Controller
+    [Authorize]
+public class AirplanesController : Controller
     {
         private readonly AirportContext _context;
 
@@ -20,10 +22,69 @@ namespace AirportApp.Controllers
         }
 
         // GET: Airplanes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? buscar, string? filtro1, string? filtro2, string? orden, int pagina = 1)
         {
-            var airportContext = _context.Airplanes.Include(a => a.Type);
-            return View(await airportContext.ToListAsync());
+            const int tamanoPagina = 20;
+
+            var consulta = _context.Airplanes
+                .AsNoTracking()
+                .Include(a => a.Type)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(buscar))
+                consulta = consulta.Where(a =>
+                    a.Type.Identifier != null && a.Type.Identifier.Contains(buscar) ||
+                    a.Type.Description != null && a.Type.Description.Contains(buscar));
+
+            if (!string.IsNullOrWhiteSpace(filtro1))
+            {
+                int airlineId = int.TryParse(filtro1, out var a) ? a : 0;
+                if (airlineId > 0)
+                    consulta = consulta.Where(x => x.AirlineId == airlineId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtro2))
+            {
+                int typeId = int.TryParse(filtro2, out var t) ? t : 0;
+                if (typeId > 0)
+                    consulta = consulta.Where(x => x.TypeId == typeId);
+            }
+
+            consulta = orden switch
+            {
+                "capacidad" => consulta.OrderByDescending(a => a.Capacity),
+                "tipo" => consulta.OrderBy(a => a.Type.Description),
+                _ => consulta.OrderBy(a => a.AirplaneId),
+            };
+
+            int totalRegistros = await consulta.CountAsync();
+
+            var aeronaves = await consulta
+                .Skip((pagina - 1) * tamanoPagina)
+                .Take(tamanoPagina)
+                .ToListAsync();
+
+            ViewBag.Paginacion = new AirportApp.ViewModels.PaginacionViewModel
+            {
+                PaginaActual = pagina,
+                TotalPaginas = (int)Math.Ceiling((double)totalRegistros / tamanoPagina),
+                TotalRegistros = totalRegistros,
+                TamanoPagina = tamanoPagina,
+                Buscar = buscar,
+                Filtro1 = filtro1,
+                Filtro2 = filtro2,
+                Orden = orden,
+            };
+
+            ViewData["Aerolineas"] = new SelectList(
+                _context.Airlines.AsNoTracking().OrderBy(a => a.Airlinename),
+                "AirlineId", "Airlinename", filtro1);
+
+            ViewData["Tipos"] = new SelectList(
+                _context.AirplaneTypes.AsNoTracking().OrderBy(t => t.Identifier),
+                "TypeId", "Identifier", filtro2);
+
+            return View(aeronaves);
         }
 
         // GET: Airplanes/Details/5
@@ -36,11 +97,16 @@ namespace AirportApp.Controllers
 
             var airplane = await _context.Airplanes
                 .Include(a => a.Type)
+                .Include(a => a.Flights)
                 .FirstOrDefaultAsync(m => m.AirplaneId == id);
             if (airplane == null)
             {
                 return NotFound();
             }
+
+            ViewData["Aerolinea"] = await _context.Airlines
+                .AsNoTracking()
+                .FirstOrDefaultAsync(al => al.AirlineId == airplane.AirlineId);
 
             return View(airplane);
         }

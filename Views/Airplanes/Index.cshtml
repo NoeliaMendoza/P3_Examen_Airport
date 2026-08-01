@@ -1,47 +1,123 @@
 @model IEnumerable<AirportApp.Models.Airplane>
+@using AirportApp.ViewModels
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Aeronaves";
+    var pag = ViewBag.Paginacion as PaginacionViewModel;
 }
 
-<h1>Index</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Aeronaves</li>
+    </ol>
+</nav>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Capacity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AirlineId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Capacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AirlineId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type.TypeId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AirplaneId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AirplaneId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AirplaneId">Delete</a>
-            </td>
-        </tr>
+<div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div>
+        <h1>Aeronaves</h1>
+        <p class="lead-muted">Consulta y administra la flota de aeronaves del aeropuerto.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary btn-icon">
+        <i class="bi bi-plus-lg"></i>Nueva aeronave
+    </a>
+</div>
+
+<div class="filter-panel">
+    <form asp-action="Index" method="get">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label" for="buscar">Buscar</label>
+                <div class="search-input">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="buscar" name="buscar" value="@pag?.Buscar"
+                           class="form-control" placeholder="Buscar por tipo o descripción" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="filtro1">Aerolínea</label>
+                <select id="filtro1" name="filtro1" class="form-select">
+                    <option value="">Todas las aerolíneas</option>
+                    @foreach (var a in ViewBag.Aerolineas)
+                    {
+                        <option value="@a.Value" selected="@(pag?.Filtro1 == a.Value)">@a.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="filtro2">Tipo</label>
+                <select id="filtro2" name="filtro2" class="form-select">
+                    <option value="">Todos los tipos</option>
+                    @foreach (var t in ViewBag.Tipos)
+                    {
+                        <option value="@t.Value" selected="@(pag?.Filtro2 == t.Value)">@t.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label class="form-label" for="orden">Ordenar</label>
+                <select id="orden" name="orden" class="form-select">
+                    <option value="id" selected="@(pag?.Orden == "id" || pag?.Orden == null)">ID</option>
+                    <option value="capacidad" selected="@(pag?.Orden == "capacidad")">Capacidad</option>
+                    <option value="tipo" selected="@(pag?.Orden == "tipo")">Tipo</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex flex-column gap-2 justify-content-end">
+                <button type="submit" class="btn btn-primary btn-icon">
+                    <i class="bi bi-funnel"></i>Filtrar
+                </button>
+                <a asp-action="Index" class="btn btn-secondary btn-icon">
+                    <i class="bi bi-arrow-counterclockwise"></i>Limpiar
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="table-card">
+        <div class="empty-state">
+            <div class="empty-icon"><i class="bi bi-airplane"></i></div>
+            <h5>Sin resultados</h5>
+            <p>No se encontraron aeronaves con los criterios indicados. Ajusta los filtros e inténtalo de nuevo.</p>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">Limpiar filtros</a>
+        </div>
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>@Html.DisplayNameFor(model => model.Capacity)</th>
+                        <th>@Html.DisplayNameFor(model => model.AirlineId)</th>
+                        <th>Tipo</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><span class="badge bg-soft-neutral">@Html.DisplayFor(modelItem => item.AirplaneId)</span></td>
+                            <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
+                            <td>@Html.DisplayFor(modelItem => item.AirlineId)</td>
+                            <td>@item.Type?.Identifier</td>
+                            <td class="actions-cell text-end">
+                                <a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@item.AirplaneId">Detalles</a>
+                                <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.AirplaneId">Editar</a>
+                                <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.AirplaneId">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <partial name="_Paginacion" model="pag" />
+}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AirportApp.Data;
@@ -10,7 +11,8 @@ using AirportApp.Models;
 
 namespace AirportApp.Controllers
 {
-    public class AirportsController : Controller
+    [Authorize]
+public class AirportsController : Controller
     {
         private readonly AirportContext _context;
 
@@ -20,9 +22,49 @@ namespace AirportApp.Controllers
         }
 
         // GET: Airports
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? buscar, string? filtro1, string? orden, int pagina = 1)
         {
-            return View(await _context.Airports.ToListAsync());
+            const int tamanoPagina = 20;
+
+            var consulta = _context.Airports.AsNoTracking().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(buscar))
+                consulta = consulta.Where(a =>
+                    a.Iata != null && a.Iata.Contains(buscar) ||
+                    a.Icao.Contains(buscar) ||
+                    a.Name.Contains(buscar));
+
+            if (!string.IsNullOrWhiteSpace(filtro1))
+                consulta = consulta.Where(a => a.Icao.Contains(filtro1));
+
+            consulta = orden switch
+            {
+                "nombre" => consulta.OrderBy(a => a.Name),
+                "nombre_desc" => consulta.OrderByDescending(a => a.Name),
+                "iata" => consulta.OrderBy(a => a.Iata),
+                "icao" => consulta.OrderBy(a => a.Icao),
+                _ => consulta.OrderBy(a => a.AirportId),
+            };
+
+            int totalRegistros = await consulta.CountAsync();
+
+            var aeropuertos = await consulta
+                .Skip((pagina - 1) * tamanoPagina)
+                .Take(tamanoPagina)
+                .ToListAsync();
+
+            ViewBag.Paginacion = new AirportApp.ViewModels.PaginacionViewModel
+            {
+                PaginaActual = pagina,
+                TotalPaginas = (int)Math.Ceiling((double)totalRegistros / tamanoPagina),
+                TotalRegistros = totalRegistros,
+                TamanoPagina = tamanoPagina,
+                Buscar = buscar,
+                Filtro1 = filtro1,
+                Orden = orden,
+            };
+
+            return View(aeropuertos);
         }
 
         // GET: Airports/Details/5

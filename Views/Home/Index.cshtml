@@ -1,8 +1,129 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero rounded-4 mb-4 fade-in">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="row align-items-center g-4 position-relative" style="z-index: 1;">
+        <div class="col-lg-7">
+            <span class="badge hero-badge mb-3">
+                <i class="bi bi-airplane me-1"></i>Operación aeroportuaria
+            </span>
+            <h1 class="hero-title text-white mb-3">Reserva y selección<br>de asientos</h1>
+            <p class="hero-subtitle mb-4">
+                Explora la programación de vuelos, filtra por aerolínea y fecha, y elige tu asiento en
+                First, Business o Economy con precios calculados en el servidor.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-controller="Flights" asp-action="Index" class="btn btn-primary btn-lg btn-icon">
+                    <i class="bi bi-search me-1"></i>Buscar vuelos
+                </a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Reservas" asp-action="Index" class="btn btn-lg btn-icon hero-btn-secondary">
+                        <i class="bi bi-ticket-perforated me-1"></i>Mis reservas
+                    </a>
+                }
+                else
+                {
+                    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-lg btn-icon hero-btn-secondary">
+                        <i class="bi bi-person-plus me-1"></i>Crear cuenta
+                    </a>
+                }
+            </div>
+        </div>
+        <div class="col-lg-5 d-none d-lg-block">
+            <div class="hero-art">
+                <div class="hero-art-plane"><i class="bi bi-airplane-engines"></i></div>
+                <div class="hero-art-rings">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-4">
+    <div class="row g-3">
+        <div class="col-sm-6 col-xl-3">
+            <a asp-controller="Flights" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card h-100">
+                    <div class="stat-icon bg-soft-primary text-primary"><i class="bi bi-airplane-engines"></i></div>
+                    <div class="stat-label">Vuelos</div>
+                    <div class="stat-value">Explorar programación</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <a asp-controller="Airlines" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card h-100">
+                    <div class="stat-icon bg-soft-neutral text-secondary"><i class="bi bi-building"></i></div>
+                    <div class="stat-label">Aerolíneas</div>
+                    <div class="stat-value">Ver catálogo</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <a asp-controller="Airplanes" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card h-100">
+                    <div class="stat-icon bg-soft-neutral text-secondary"><i class="bi bi-box-seam"></i></div>
+                    <div class="stat-label">Aeronaves</div>
+                    <div class="stat-value">Ver flota</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <a asp-controller="Airports" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card h-100">
+                    <div class="stat-icon bg-soft-success text-success"><i class="bi bi-geo-alt"></i></div>
+                    <div class="stat-label">Aeropuertos</div>
+                    <div class="stat-value">Ver destinos</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="mb-4">
+    <div class="section-heading d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h2 class="mb-0">Cómo funciona</h2>
+            <p class="text-muted small mb-0">Tres pasos para reservar tu asiento.</p>
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-lg-4">
+            <div class="feature-card h-100">
+                <div class="feature-step">1</div>
+                <div class="feature-icon bg-soft-primary text-primary"><i class="bi bi-grid-3x3-gap"></i></div>
+                <h5 class="mb-2">Elige tu asiento</h5>
+                <p class="text-muted small mb-0">
+                    Cada aeronave genera su cabina según su capacidad. Los asientos ocupados y las
+                    reservas temporales de otros usuarios se muestran bloqueados.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="feature-card h-100">
+                <div class="feature-step">2</div>
+                <div class="feature-icon bg-soft-warning text-warning-emphasis"><i class="bi bi-clock"></i></div>
+                <h5 class="mb-2">Reserva temporal</h5>
+                <p class="text-muted small mb-0">
+                    Al elegir un asiento se crea una reserva de 10 minutos. El precio se calcula en el
+                    servidor según la clase y no es editable por el cliente.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="feature-card h-100">
+                <div class="feature-step">3</div>
+                <div class="feature-icon bg-soft-success text-success"><i class="bi bi-credit-card"></i></div>
+                <h5 class="mb-2">Pago seguro</h5>
+                <p class="text-muted small mb-0">
+                    Las órdenes pendientes se procesan con PayPal Sandbox o PayPhone en ambiente de
+                    pruebas, registrando cada pago y transacción.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>

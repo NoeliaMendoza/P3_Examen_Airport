@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AirportApp.Data;
@@ -10,7 +11,8 @@ using AirportApp.Models;
 
 namespace AirportApp.Controllers
 {
-    public class PassengersController : Controller
+    [Authorize]
+public class PassengersController : Controller
     {
         private readonly AirportContext _context;
 
@@ -20,9 +22,44 @@ namespace AirportApp.Controllers
         }
 
         // GET: Passengers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? buscar, string? orden, int pagina = 1)
         {
-            return View(await _context.Passengers.ToListAsync());
+            const int tamanoPagina = 20;
+
+            var consulta = _context.Passengers.AsNoTracking().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(buscar))
+                consulta = consulta.Where(p =>
+                    p.Passportno.Contains(buscar) ||
+                    p.Firstname.Contains(buscar) ||
+                    p.Lastname.Contains(buscar));
+
+            consulta = orden switch
+            {
+                "apellido" => consulta.OrderBy(p => p.Lastname).ThenBy(p => p.Firstname),
+                "apellido_desc" => consulta.OrderByDescending(p => p.Lastname),
+                "pasaporte" => consulta.OrderBy(p => p.Passportno),
+                _ => consulta.OrderBy(p => p.PassengerId),
+            };
+
+            int totalRegistros = await consulta.CountAsync();
+
+            var pasajeros = await consulta
+                .Skip((pagina - 1) * tamanoPagina)
+                .Take(tamanoPagina)
+                .ToListAsync();
+
+            ViewBag.Paginacion = new AirportApp.ViewModels.PaginacionViewModel
+            {
+                PaginaActual = pagina,
+                TotalPaginas = (int)Math.Ceiling((double)totalRegistros / tamanoPagina),
+                TotalRegistros = totalRegistros,
+                TamanoPagina = tamanoPagina,
+                Buscar = buscar,
+                Orden = orden,
+            };
+
+            return View(pasajeros);
         }
 
         // GET: Passengers/Details/5
