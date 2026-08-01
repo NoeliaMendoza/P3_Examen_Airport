@@ -36,7 +36,7 @@
                 </div>
                 <div class="mb-4">
                     <label asp-for="AirlineId" class="form-label"></label>
-                    <input asp-for="AirlineId" class="form-control" />
+                    <select asp-for="AirlineId" class="form-select" asp-items="ViewBag.AirlineId"></select>
                     <span asp-validation-for="AirlineId" class="text-danger small"></span>
                 </div>
 

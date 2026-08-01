@@ -91,10 +91,11 @@ public class PassengersController : Controller
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PassengerId,Passportno,Firstname,Lastname")] Passenger passenger)
+        public async Task<IActionResult> Create([Bind("Passportno,Firstname,Lastname")] Passenger passenger)
         {
             if (ModelState.IsValid)
             {
+                passenger.PassengerId = (await _context.Passengers.MaxAsync(p => (int?)p.PassengerId) ?? 0) + 1;
                 _context.Add(passenger);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

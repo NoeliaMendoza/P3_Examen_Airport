@@ -114,7 +114,8 @@ public class AirplanesController : Controller
         // GET: Airplanes/Create
         public IActionResult Create()
         {
-            ViewData["TypeId"] = new SelectList(_context.AirplaneTypes, "TypeId", "TypeId");
+            ViewData["TypeId"] = new SelectList(_context.AirplaneTypes, "TypeId", "Identifier");
+            ViewData["AirlineId"] = new SelectList(_context.Airlines, "AirlineId", "Airlinename");
             return View();
         }
 
@@ -123,15 +124,17 @@ public class AirplanesController : Controller
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AirplaneId,Capacity,TypeId,AirlineId")] Airplane airplane)
+        public async Task<IActionResult> Create([Bind("Capacity,TypeId,AirlineId")] Airplane airplane)
         {
             if (ModelState.IsValid)
             {
+                airplane.AirplaneId = (await _context.Airplanes.MaxAsync(a => (int?)a.AirplaneId) ?? 0) + 1;
                 _context.Add(airplane);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TypeId"] = new SelectList(_context.AirplaneTypes, "TypeId", "TypeId", airplane.TypeId);
+            ViewData["TypeId"] = new SelectList(_context.AirplaneTypes, "TypeId", "Identifier", airplane.TypeId);
+            ViewData["AirlineId"] = new SelectList(_context.Airlines, "AirlineId", "Airlinename", airplane.AirlineId);
             return View(airplane);
         }
 
@@ -148,7 +151,8 @@ public class AirplanesController : Controller
             {
                 return NotFound();
             }
-            ViewData["TypeId"] = new SelectList(_context.AirplaneTypes, "TypeId", "TypeId", airplane.TypeId);
+            ViewData["TypeId"] = new SelectList(_context.AirplaneTypes, "TypeId", "Identifier", airplane.TypeId);
+            ViewData["AirlineId"] = new SelectList(_context.Airlines, "AirlineId", "Airlinename", airplane.AirlineId);
             return View(airplane);
         }
 
@@ -184,7 +188,8 @@ public class AirplanesController : Controller
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TypeId"] = new SelectList(_context.AirplaneTypes, "TypeId", "TypeId", airplane.TypeId);
+            ViewData["TypeId"] = new SelectList(_context.AirplaneTypes, "TypeId", "Identifier", airplane.TypeId);
+            ViewData["AirlineId"] = new SelectList(_context.Airlines, "AirlineId", "Airlinename", airplane.AirlineId);
             return View(airplane);
         }
 

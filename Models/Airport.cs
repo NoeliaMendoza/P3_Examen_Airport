@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace AirportApp.Models;
 
@@ -10,10 +11,17 @@ public partial class Airport
 {
     public int AirportId { get; set; }
 
+    [Display(Name = "Código IATA")]
+    [StringLength(3, ErrorMessage = "El campo {0} no puede superar los {1} caracteres.")]
     public string? Iata { get; set; }
 
+    [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+    [StringLength(4, ErrorMessage = "El campo {0} no puede superar los {1} caracteres.")]
+    [Display(Name = "Código ICAO")]
     public string Icao { get; set; } = null!;
 
+    [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+    [Display(Name = "Nombre del aeropuerto")]
     public string Name { get; set; } = null!;
 
     public virtual AirportGeo? AirportGeo { get; set; }

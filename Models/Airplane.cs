@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace AirportApp.Models;
 
@@ -10,10 +11,16 @@ public partial class Airplane
 {
     public int AirplaneId { get; set; }
 
+    [Range(1, int.MaxValue, ErrorMessage = "El campo {0} es obligatorio.")]
+    [Display(Name = "Capacidad")]
     public int Capacity { get; set; }
 
+    [Range(1, int.MaxValue, ErrorMessage = "Seleccione el tipo de aeronave.")]
+    [Display(Name = "Tipo de aeronave")]
     public int TypeId { get; set; }
 
+    [Range(1, int.MaxValue, ErrorMessage = "Seleccione la aerolínea.")]
+    [Display(Name = "Aerolínea")]
     public int AirlineId { get; set; }
 
     public virtual ICollection<Flight> Flights { get; set; } = new List<Flight>();

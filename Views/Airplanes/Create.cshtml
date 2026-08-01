@@ -24,11 +24,6 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="mb-3">
-                    <label asp-for="AirplaneId" class="form-label"></label>
-                    <input asp-for="AirplaneId" class="form-control" />
-                    <span asp-validation-for="AirplaneId" class="text-danger small"></span>
-                </div>
-                <div class="mb-3">
                     <label asp-for="Capacity" class="form-label"></label>
                     <input asp-for="Capacity" class="form-control" />
                     <span asp-validation-for="Capacity" class="text-danger small"></span>
@@ -36,10 +31,11 @@
                 <div class="mb-3">
                     <label asp-for="TypeId" class="form-label"></label>
                     <select asp-for="TypeId" class="form-select" asp-items="ViewBag.TypeId"></select>
+                    <span asp-validation-for="TypeId" class="text-danger small"></span>
                 </div>
                 <div class="mb-4">
                     <label asp-for="AirlineId" class="form-label"></label>
-                    <input asp-for="AirlineId" class="form-control" />
+                    <select asp-for="AirlineId" class="form-select" asp-items="ViewBag.AirlineId"></select>
                     <span asp-validation-for="AirlineId" class="text-danger small"></span>
                 </div>
 
