@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Reserva expirada";
+}
+
+<div class="table-card empty-state fade-in" style="max-width: 34rem; margin: 3rem auto;">
+    <div class="empty-icon"><i class="bi bi-hourglass-split"></i></div>
+    <h5>Reserva expirada</h5>
+    <p>Tu reserva temporal venció (10 minutos). Selecciona de nuevo tu asiento para continuar.</p>
+    <div class="d-flex gap-2 justify-content-center">
+        <a asp-controller="Flights" asp-action="Index" class="btn btn-primary btn-icon">
+            <i class="bi bi-search"></i>Buscar vuelos
+        </a>
+        <a asp-action="Index" class="btn btn-secondary btn-icon">
+            <i class="bi bi-ticket-perforated"></i>Mis reservas
+        </a>
+    </div>
+</div>

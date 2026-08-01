@@ -1,0 +1,13 @@
+@model AirportApp.Models.Flight
+@{
+    ViewData["Title"] = "Sin aeronave";
+}
+
+<div class="table-card empty-state fade-in" style="max-width: 34rem; margin: 3rem auto;">
+    <div class="empty-icon"><i class="bi bi-exclamation-octagon"></i></div>
+    <h5>Sin aeronave asignada</h5>
+    <p>El vuelo <strong>@Model.Flightno</strong> no tiene una aeronave asignada, por lo que no se pueden mostrar asientos.</p>
+    <a asp-controller="Flights" asp-action="Index" class="btn btn-primary btn-icon">
+        <i class="bi bi-search"></i>Buscar otros vuelos
+    </a>
+</div>

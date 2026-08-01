@@ -1,0 +1,133 @@
+@model AirportApp.ViewModels.AsientosViewModel
+@{
+    ViewData["Title"] = "Selección de asientos";
+    var tomados = ViewBag.Tomados as HashSet<int> ?? new HashSet<int>();
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Inicio</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Flights" asp-action="Index">Vuelos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Selección de asientos</li>
+    </ol>
+</nav>
+
+@if (Model.Vuelo != null)
+{
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-end gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-soft-primary"><i class="bi bi-airplane me-1"></i>Vuelo @Model.Vuelo.Flightno</span>
+            </div>
+            <h1 class="d-flex align-items-center gap-2">
+                <span class="badge bg-soft-primary fs-6">@Model.Vuelo.FromNavigation?.Iata</span>
+                <i class="bi bi-arrow-right text-muted"></i>
+                <span class="badge bg-soft-primary fs-6">@Model.Vuelo.ToNavigation?.Iata</span>
+            </h1>
+            <p class="lead-muted mb-0">
+                @Model.Vuelo.Departure · Aeronave @Model.Vuelo.Airplane?.AirplaneId
+                (capacidad @Model.Vuelo.Airplane?.Capacity)
+            </p>
+        </div>
+        <div class="d-flex flex-wrap gap-3 text-center">
+            <div class="stat-card p-3" style="min-width: 7rem;">
+                <div class="stat-value text-success" style="font-size: 1.375rem;">@Model.Disponibles</div>
+                <div class="stat-label">Disponibles</div>
+            </div>
+            <div class="stat-card p-3" style="min-width: 7rem;">
+                <div class="stat-value text-danger" style="font-size: 1.375rem;">@Model.Ocupados</div>
+                <div class="stat-label">Ocupados</div>
+            </div>
+            <div class="stat-card p-3" style="min-width: 7rem;">
+                <div class="stat-value" style="font-size: 1.375rem;">$@Model.PrecioPromedio.ToString("N2")</div>
+                <div class="stat-label">Precio promedio</div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="filter-panel">
+    <form asp-action="Asientos" method="get" class="row g-3 align-items-end">
+        <input type="hidden" name="id" value="@Model.Vuelo?.FlightId" />
+        <div class="col-md-4 col-lg-3">
+            <label class="form-label" for="clase">Clase</label>
+            <select id="clase" name="clase" class="form-select">
+                <option value="">Todas las clases</option>
+                <option value="First" selected="@(Model.Clase == "First")">First</option>
+                <option value="Business" selected="@(Model.Clase == "Business")">Business</option>
+                <option value="Economy" selected="@(Model.Clase == "Economy")">Economy</option>
+            </select>
+        </div>
+        <div class="col-12 col-md-auto d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-icon"><i class="bi bi-funnel"></i>Filtrar</button>
+            <a asp-action="Asientos" asp-route-id="@Model.Vuelo?.FlightId" class="btn btn-secondary btn-icon">
+                <i class="bi bi-arrow-counterclockwise"></i>Limpiar
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+    <div class="d-flex align-items-center gap-2 small text-muted">
+        <span class="seat-legend" style="background-color:#EFF6FF;border-color:#93C5FD;color:#1D4ED8;">F</span> First · $850
+    </div>
+    <div class="d-flex align-items-center gap-2 small text-muted">
+        <span class="seat-legend" style="background-color:#FFFBEB;border-color:#FDE68A;color:#B45309;">B</span> Business · $450
+    </div>
+    <div class="d-flex align-items-center gap-2 small text-muted">
+        <span class="seat-legend" style="background-color:#F1F5F9;border-color:#CBD5E1;color:#475569;">E</span> Economy · $180
+    </div>
+    <div class="d-flex align-items-center gap-2 small text-muted">
+        <span class="seat-legend seat-legend-disponible"><i class="bi bi-check-lg"></i></span> Disponible
+    </div>
+    <div class="d-flex align-items-center gap-2 small text-muted">
+        <span class="seat-legend seat-legend-ocupado"><i class="bi bi-x-lg"></i></span> Ocupado
+    </div>
+</div>
+
+<div class="table-card p-4">
+    @if (!Model.AsientosFiltrados.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon"><i class="bi bi-grid-3x3-gap"></i></div>
+            <h5>Sin asientos para esta clase</h5>
+            <p>No hay asientos disponibles con el filtro seleccionado.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2">
+            @foreach (var asiento in Model.AsientosFiltrados)
+            {
+                var ocupado = tomados.Contains(asiento.SeatId);
+                var claseCss = asiento.SeatClass switch
+                {
+                    "First" => "seat-first",
+                    "Business" => "seat-business",
+                    _ => "seat-economy",
+                };
+                <div class="col">
+                    @if (ocupado)
+                    {
+                        <button type="button" class="seat seat-ocupado" title="@asiento.SeatNo - @asiento.SeatClass (ocupado)" disabled>
+                            <span>@asiento.SeatNo</span>
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    }
+                    else
+                    {
+                        <form asp-action="Reservar" method="post" class="m-0">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="flightId" value="@asiento.FlightId" />
+                            <input type="hidden" name="seatNo" value="@asiento.SeatNo" />
+                            <button type="submit" class="seat @claseCss" title="@asiento.SeatNo - @asiento.SeatClass - $@asiento.Price.ToString("N2")">
+                                <span>@asiento.SeatNo</span>
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+                        </form>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
