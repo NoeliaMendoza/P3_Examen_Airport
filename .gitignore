@@ -9,6 +9,9 @@ obj/
 *.userprefs
 
 ## App settings with secrets
+appsettings.json
+appsettings.*.json
+!appsettings.Example.json
 appsettings.Local.json
 appsettings.*.Local.json
 secrets.json
