@@ -50,7 +50,11 @@ public class FlightsController : Controller
             if (!string.IsNullOrWhiteSpace(filtro2))
             {
                 if (DateTime.TryParse(filtro2, out var fecha))
-                    consulta = consulta.Where(f => f.Departure.Date == fecha.Date);
+                {
+                    var inicio = DateTime.SpecifyKind(fecha.Date, DateTimeKind.Utc);
+                    var fin = inicio.AddDays(1);
+                    consulta = consulta.Where(f => f.Departure >= inicio && f.Departure < fin);
+                }
             }
 
             consulta = orden switch
@@ -128,6 +132,9 @@ public class FlightsController : Controller
         {
             if (ModelState.IsValid)
             {
+                flight.FlightId = (await _context.Flights.MaxAsync(f => (int?)f.FlightId) ?? 0) + 1;
+                flight.Departure = DateTime.SpecifyKind(flight.Departure, DateTimeKind.Utc);
+                flight.Arrival = DateTime.SpecifyKind(flight.Arrival, DateTimeKind.Utc);
                 _context.Add(flight);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -177,6 +184,8 @@ public class FlightsController : Controller
             {
                 try
                 {
+                    flight.Departure = DateTime.SpecifyKind(flight.Departure, DateTimeKind.Utc);
+                    flight.Arrival = DateTime.SpecifyKind(flight.Arrival, DateTimeKind.Utc);
                     _context.Update(flight);
                     await _context.SaveChangesAsync();
                 }
