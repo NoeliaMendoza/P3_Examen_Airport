@@ -27,5 +27,16 @@ public static class IdentitySeeder
             await userManager.CreateAsync(admin, passwordAdmin);
             await userManager.AddToRoleAsync(admin, "Administrador");
         }
+
+        string emailCliente = "cliente@espe.edu.ec";
+        string passwordCliente = "Cliente123*";
+
+        var cliente = await userManager.FindByEmailAsync(emailCliente);
+        if (cliente == null)
+        {
+            cliente = new IdentityUser { UserName = emailCliente, Email = emailCliente };
+            await userManager.CreateAsync(cliente, passwordCliente);
+            await userManager.AddToRoleAsync(cliente, "Cliente");
+        }
     }
 }

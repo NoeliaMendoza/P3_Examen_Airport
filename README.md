@@ -94,8 +94,9 @@ El contexto AirportContext lee la base de datos Flughafen con Database First y n
 | Rol | Correo | Contrasena |
 |---|---|---|
 | Administrador | admin@espe.edu.ec | Admin123* |
+| Cliente | cliente@espe.edu.ec | Cliente123* |
 
-Los usuarios que se registran reciben automaticamente el rol Cliente. El administrador se crea al iniciar la aplicacion por primera vez con el seeder.
+Los usuarios que se registran reciben automaticamente el rol Cliente. El administrador y el cliente de prueba se crean al iniciar la aplicacion por primera vez con el seeder.
 
 ## Estructura del proyecto
 
