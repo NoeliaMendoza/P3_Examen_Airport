@@ -37,26 +37,29 @@
                                 Vuelos
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Airlines" ? "active" : "")" asp-area="" asp-controller="Airlines" asp-action="Index">
-                                Aerolíneas
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Airplanes" ? "active" : "")" asp-area="" asp-controller="Airplanes" asp-action="Index">
-                                Aeronaves
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Airports" ? "active" : "")" asp-area="" asp-controller="Airports" asp-action="Index">
-                                Aeropuertos
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Passengers" ? "active" : "")" asp-area="" asp-controller="Passengers" asp-action="Index">
-                                Pasajeros
-                            </a>
-                        </li>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Airlines" ? "active" : "")" asp-area="" asp-controller="Airlines" asp-action="Index">
+                                    Aerolíneas
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Airplanes" ? "active" : "")" asp-area="" asp-controller="Airplanes" asp-action="Index">
+                                    Aeronaves
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Airports" ? "active" : "")" asp-area="" asp-controller="Airports" asp-action="Index">
+                                    Aeropuertos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Passengers" ? "active" : "")" asp-area="" asp-controller="Passengers" asp-action="Index">
+                                    Pasajeros
+                                </a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

@@ -11,7 +11,7 @@ using AirportApp.Models;
 
 namespace AirportApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
 public class AirplanesController : Controller
     {
         private readonly AirportContext _context;

@@ -54,33 +54,48 @@
                 </div>
             </a>
         </div>
-        <div class="col-sm-6 col-xl-3">
-            <a asp-controller="Airlines" asp-action="Index" class="text-decoration-none">
-                <div class="stat-card h-100">
-                    <div class="stat-icon bg-soft-neutral text-secondary"><i class="bi bi-building"></i></div>
-                    <div class="stat-label">Aerolíneas</div>
-                    <div class="stat-value">Ver catálogo</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <a asp-controller="Airplanes" asp-action="Index" class="text-decoration-none">
-                <div class="stat-card h-100">
-                    <div class="stat-icon bg-soft-neutral text-secondary"><i class="bi bi-box-seam"></i></div>
-                    <div class="stat-label">Aeronaves</div>
-                    <div class="stat-value">Ver flota</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <a asp-controller="Airports" asp-action="Index" class="text-decoration-none">
-                <div class="stat-card h-100">
-                    <div class="stat-icon bg-soft-success text-success"><i class="bi bi-geo-alt"></i></div>
-                    <div class="stat-label">Aeropuertos</div>
-                    <div class="stat-value">Ver destinos</div>
-                </div>
-            </a>
-        </div>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="col-sm-6 col-xl-3">
+                <a asp-controller="Reservas" asp-action="Index" class="text-decoration-none">
+                    <div class="stat-card h-100">
+                        <div class="stat-icon bg-soft-warning text-warning-emphasis"><i class="bi bi-ticket-perforated"></i></div>
+                        <div class="stat-label">Reservas</div>
+                        <div class="stat-value">Mis reservas</div>
+                    </div>
+                </a>
+            </div>
+        }
+        @if (User.IsInRole("Administrador"))
+        {
+            <div class="col-sm-6 col-xl-3">
+                <a asp-controller="Airlines" asp-action="Index" class="text-decoration-none">
+                    <div class="stat-card h-100">
+                        <div class="stat-icon bg-soft-neutral text-secondary"><i class="bi bi-building"></i></div>
+                        <div class="stat-label">Aerolíneas</div>
+                        <div class="stat-value">Ver catálogo</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <a asp-controller="Airplanes" asp-action="Index" class="text-decoration-none">
+                    <div class="stat-card h-100">
+                        <div class="stat-icon bg-soft-neutral text-secondary"><i class="bi bi-box-seam"></i></div>
+                        <div class="stat-label">Aeronaves</div>
+                        <div class="stat-value">Ver flota</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <a asp-controller="Airports" asp-action="Index" class="text-decoration-none">
+                    <div class="stat-card h-100">
+                        <div class="stat-icon bg-soft-success text-success"><i class="bi bi-geo-alt"></i></div>
+                        <div class="stat-label">Aeropuertos</div>
+                        <div class="stat-value">Ver destinos</div>
+                    </div>
+                </a>
+            </div>
+        }
     </div>
 </section>
 

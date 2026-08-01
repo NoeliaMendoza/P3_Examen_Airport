@@ -217,7 +217,8 @@ La aplicacion inicia en `http://localhost:5043`. El usuario de administracion se
 - `appsettings.json` excluido del repositorio con .gitignore.
 - `appsettings.Example.json` con valores de ejemplo sin credenciales reales.
 - Rutas protegidas con Authorize.
-- Panel de administracion restringido al rol Administrador.
+- Panel de administracion y CRUD de aerolineas, aeronaves, aeropuertos y pasajeros restringidos al rol Administrador.
+- El rol Cliente explora vuelos y reserva asientos; la creacion, edicion y eliminacion de registros de gestion son exclusivas del administrador.
 - Cada cliente consulta unicamente sus propias ordenes y pagos.
 - Antiforgery token en los formularios POST.
 - El precio se calcula siempre en el servidor y no se confia en el navegador.

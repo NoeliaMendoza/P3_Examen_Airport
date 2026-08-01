@@ -113,6 +113,7 @@ public class FlightsController : Controller
         }
 
         // GET: Flights/Create
+        [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
             ViewData["AirlineId"] = new SelectList(_context.Airlines, "AirlineId", "AirlineId");
@@ -128,6 +129,7 @@ public class FlightsController : Controller
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Create([Bind("FlightId,Flightno,From,To,Departure,Arrival,AirlineId,AirplaneId")] Flight flight)
         {
             if (ModelState.IsValid)
@@ -148,6 +150,7 @@ public class FlightsController : Controller
         }
 
         // GET: Flights/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -173,6 +176,7 @@ public class FlightsController : Controller
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, [Bind("FlightId,Flightno,From,To,Departure,Arrival,AirlineId,AirplaneId")] Flight flight)
         {
             if (id != flight.FlightId)
@@ -211,6 +215,7 @@ public class FlightsController : Controller
         }
 
         // GET: Flights/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -236,6 +241,7 @@ public class FlightsController : Controller
         // POST: Flights/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var flight = await _context.Flights.FindAsync(id);
